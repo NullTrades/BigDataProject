@@ -11,7 +11,7 @@ public class fileReader {
     // Hashmap, in which the keys will be the csv columns and the values associated will be the data in the columns
     public static Map<String, List<Object>> animalMovData = new LinkedHashMap<>();
 
-    private static String filePath;
+    String filePath;
 
     public fileReader(String filePath) {
         this.filePath = filePath;
