@@ -36,7 +36,7 @@ public class fileReader {
 
                 // Split at the commas, and store the values in an array
                 String[] values = line.split(",");
-
+                System.out.println(line);
                 // Handling empty cells
                 for (int i = 0; i < values.length; i++) {
                     if (values[i].matches("^\\s*$")) {
@@ -44,13 +44,17 @@ public class fileReader {
                     }
                 }
 
+                System.out.println(Arrays.toString(values));
+
+
                 // For loop to iterate through the columns, and store the values in the hashmap
                 for (int i = 0; i < columns.length; i++) {
+
                     List<Object> columnValues = animalMovData.get(columns[i]);
 
                     // Basic value cleaning
-                    String value = values[i].strip().toLowerCase();
 
+                    String value = values[i].strip();
 
                     // Converting the values to the correct data type
                     if (value.matches("^[0-9\\-\\.]+$")) {
