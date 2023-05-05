@@ -9,14 +9,14 @@ import java.util.*;
 public class fileReader {
 
     // Hashmap, in which the keys will be the csv columns and the values associated will be the data in the columns
-    public static Map<String, List<Object>> animalMovData = new LinkedHashMap<>();
+    public static Map<String, List<Object>> csvData = new LinkedHashMap<>();
 
     String filePath;
 
     public fileReader(String filePath) {
         this.filePath = filePath;
     }
-    public void storeCsv() {
+    public Map<String, List<Object>> storeCsv() {
 
         // using buffered reader to read the csv file
         try (BufferedReader br = new BufferedReader(new FileReader(this.filePath))) {
@@ -27,7 +27,7 @@ public class fileReader {
 
             // Place all the columns in the hashmap as keys
             for (String column : columns) {
-                animalMovData.put(column, new ArrayList<>());
+                csvData.put(column, new ArrayList<>());
             }
 
             // While loop to read the csv file line by line
@@ -50,7 +50,7 @@ public class fileReader {
                 // For loop to iterate through the columns, and store the values in the hashmap
                 for (int i = 0; i < columns.length; i++) {
 
-                    List<Object> columnValues = animalMovData.get(columns[i]);
+                    List<Object> columnValues = csvData.get(columns[i]);
 
                     // Basic value cleaning
 
@@ -83,16 +83,18 @@ public class fileReader {
             System.out.println("Error reading file, please check the file path.");
         }
 
+        return csvData;
+
     }
 
     public void printCsv() {
 
         // Get column headers
-        String[] columnHeaders = animalMovData.keySet().toArray(new String[0]);
+        String[] columnHeaders = csvData.keySet().toArray(new String[0]);
 
         // Get the maximum number of elements in a column
         int maxNumElements = 0;
-        for (List<Object> values : animalMovData.values()) {
+        for (List<Object> values : csvData.values()) {
             if (values.size() > maxNumElements) {
                 maxNumElements = values.size();
             }
@@ -107,7 +109,7 @@ public class fileReader {
         // Print the table contents, with 35 spaces between each. Empty cells are filled with spaces
         for (int j = 0; j < maxNumElements; j++) {
             for (String columnHeader : columnHeaders) {
-                List<Object> values = animalMovData.get(columnHeader);
+                List<Object> values = csvData.get(columnHeader);
 
                 if (j < values.size()) {
                     System.out.printf("%-35s", values.get(j));
