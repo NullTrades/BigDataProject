@@ -60,7 +60,7 @@ public class fileReader {
                     if (value.matches("^[0-9\\-\\.]+$")) {
                         if (value.contains(".")) {
                             // Big decimal needed for precision
-                            columnValues.add(new BigDecimal(value));
+                            columnValues.add(Double.parseDouble(value));
                         } else if (value.length() <= 10) {
                             // Convert to integer if the value is less than 10 digits
                             columnValues.add(Integer.parseInt(value));
