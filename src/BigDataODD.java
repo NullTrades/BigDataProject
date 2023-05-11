@@ -234,11 +234,25 @@ public class BigDataODD {
         divider();
     }
 
+    //Code by Daniel
     private static void findFamilyPercentage() {
 
         List<Object> familyCol = happyData.get("Family");
         List<Object> scoreCol = happyData.get("Happiness.Score");
 
+        System.out.println("Top 10 Nations:");
+        for(int i = 0; i < 10; i++) {
+            Double fcValue = Double.parseDouble(familyCol.get(i).toString());
+            Double scValue = Double.parseDouble(scoreCol.get(i).toString());
+            double percentage = (fcValue / scValue) * 100;
+
+            String country = (String) happyData.get("Country").get(i);
+            System.out.println(country + " - Percentage: " + percentage + "%");
+        }
+
+        divider();
+
+        System.out.println("Bottom 10 Nations:");
         for(int i = 0; i < familyCol.size(); i++) {
             if (i >= (familyCol.size() - 10)) {
                 //Part of this code was thanks to the valiant efforts of an unknown soldier named Quinn, who skipped Chemistry 20 to heed our call
@@ -253,11 +267,17 @@ public class BigDataODD {
 
         divider();
 
-        System.out.println("This algorithm finds the percentage at which family contributes to the happiness scores of the top 10 countries");
+        System.out.println("This algorithm finds the percentage at which family contributes to the happiness scores of the top and bottom 10 countries");
         System.out.println("It stores the appropriate data in their own list from the hashmap before retrieving each nations individual happiness scores and family scores");
-        System.out.println("Finally, sample");
+        System.out.println("Finally, after making sure each value is a double, we calculate the average percentage and print it out");
 
+        divider();
 
+        System.out.println("What can be inferred from these results is that despite there being a drastic difference of happiness between the top and bottom 10 nations, family in the majority of these countries make up a similar percentage of total happiness");
+        System.out.println("Furthermore, Some countries like Rwanda, despite having a lower happiness score compared to Norway, has a bigger percentage of their happiness score made up from family");
+        System.out.println("This can suggest that people from nations with a lower happiness find family to be more important, whether it be due to cultural or religious reasons");
+
+        divider();
     }
 
     //Code by Daniel
@@ -281,8 +301,7 @@ public class BigDataODD {
 
         double average = total / count;
 
-        System.out.println("Average Happiness Score: " + rn(average, 3));
-        System.out.println("Real Average ahem Osy ahem: " + average);
+        System.out.println("Average Happiness Score: " + average);
 
         divider();
 
