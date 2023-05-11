@@ -43,7 +43,7 @@ public class BigDataODD {
                         "\n\t AVERAGE - Finds the average happiness score" +
                         "\n\t DILSHAAN3 - Sample" +
                         "\n\t FREEDOM AND TRUST - Analyzes the top and bottom 10 nations freedom and trust parameters" +
-                        "\n\t DANIEL3 - Sample" +
+                        "\n\t FAMILY PERCENTAGE - Finds the percentage at which family makes up the top 10 nations happiness scores" +
                         "\n\t OSY1 - Sample" +
                         "\n\t OSY1 - Sample" +
                         "\n\t OSY3 - Sample" +
@@ -69,8 +69,8 @@ public class BigDataODD {
                     //Method here
                 } else if(input.equals("FREEDOM AND TRUST")) {
                     freedomGovTrustCorrelation();
-                } else if(input.equals("DANIEL3")) {
-                    //Method here
+                } else if(input.equals("FAMILY PERCENTAGE")) {
+                    findFamilyPercentage();
                 } else if(input.equals("OSY1")) {
                     //Method here
                 } else if(input.equals("OSY2")) {
@@ -79,7 +79,9 @@ public class BigDataODD {
                     //Method here
                 } else {
                     if(!input.equals("EXIT")) {
+                        divider();
                         System.out.println("That is an invalid input. Please try again!");
+                        divider();
                     }
                 }
 
@@ -232,6 +234,32 @@ public class BigDataODD {
         divider();
     }
 
+    private static void findFamilyPercentage() {
+
+        List<Object> familyCol = happyData.get("Family");
+        List<Object> scoreCol = happyData.get("Happiness.Score");
+
+        for(int i = 0; i < familyCol.size(); i++) {
+            if (i >= (familyCol.size() - 10)) {
+                //Part of this code was thanks to the valiant efforts of an unknown soldier named Quinn, who skipped Chemistry 20 to heed our call
+                Double fcValue = Double.parseDouble(familyCol.get(i).toString());
+                Double scValue = Double.parseDouble(scoreCol.get(i).toString());
+                double percentage = (fcValue / scValue) * 100;
+
+                String country = (String) happyData.get("Country").get(i);
+                System.out.println(country + " - Percentage: " + percentage + "%");
+            }
+        }
+
+        divider();
+
+        System.out.println("This algorithm finds the percentage at which family contributes to the happiness scores of the top 10 countries");
+        System.out.println("It stores the appropriate data in their own list from the hashmap before retrieving each nations individual happiness scores and family scores");
+        System.out.println("Finally, sample");
+
+
+    }
+
     //Code by Daniel
     private static void averageHappinessScore() {
         List<Object> happinessScore = happyData.get("Happiness.Score");
@@ -263,7 +291,8 @@ public class BigDataODD {
 
         divider();
 
-        System.out.println("I was intrigued by this result because...");
+        System.out.println("I was intrigued by this result because with all this collected data, I did want to find out what the average happiness score was");
+        System.out.println("By doing so, I'm able to compare if a certain countries happiness score is above or below the average, along with potentially why");
 
         divider();
     }
