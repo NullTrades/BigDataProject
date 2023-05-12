@@ -41,7 +41,7 @@ public class BigDataODD {
                         "\n\t COUNTRY_SEARCH - Prints out all the data associated with the specific country" +
                         "\n\t FREEDOM_TRUST - Analyzes the top and bottom 10 nations freedom and trust parameters" +
                         "\n\t FAMILY_PERCENTAGE - Finds the percentage at which family makes up the top 10 nations happiness scores" +
-                        "\n\t ML_Predictions - Predict the overall happiness score of country x based on various values (Supervised Machine Learning Algorithim)" +
+                        "\n\t ML_PREDICT - Predict the overall happiness score of country x based on various values (Supervised Machine Learning Algorithim)" +
                         "\n\t OSY1 - Sample"+
                         "\n\t OSY1 - Sample" +
                         "\n\t OSY3 - Sample" +
@@ -150,8 +150,16 @@ public class BigDataODD {
     private static void findLowestHighest() {
         parameters();
         System.out.println("Please enter the parameter you would like to find the sorted values of: ");
-        String colName = scanner.nextLine();
-        List<Object> colData = happyData.get(colName);
+
+        String colNameRaw = scanner.nextLine();
+        String colName = colNameRaw.substring(0, 1).toUpperCase() + colNameRaw.substring(1);
+        List<Object> colData = new ArrayList<>();
+        try{
+            colData = happyData.get(colName);
+        } catch (NullPointerException e){
+            System.out.println("That is an invalid parameter. Please try again!");
+            findLowestHighest();
+        }
 
         for (int i = 0; i < colData.size() - 1; i++) {
             for (int j = 0; j < colData.size() - i - 1; j++) {
@@ -369,11 +377,12 @@ public class BigDataODD {
                 "of the actual algorithm involved ");
         System.out.println("This algorithm is extremely useful because it can predict the overall happiness values of countries which may not be specified in our dataset. It can also" +
                 "predict values for countries in the future which have not been created yet");
+        divider();
     }
 
     //Code by Daniel - I love this
-    private static void divider() {
-        System.out.println("---------------");
+    private static void divider(){
+        System.out.println("---------------\n");
     }
 
     //Code by Daniel
