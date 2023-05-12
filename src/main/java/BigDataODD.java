@@ -51,7 +51,7 @@ public class BigDataODD {
 
                 System.out.print("Your Choice: ");
 
-                input = scanner.nextLine().toUpperCase();
+                input = scanner.nextLine().toUpperCase().trim();
                 switch (input) {
                     case "ABOUT":
                         about();
