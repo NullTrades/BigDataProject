@@ -3,19 +3,19 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
 
-public class fileReader {
+public class _FileReader {
 
     // Hashmap, in which the keys will be the csv columns and the values associated will be the data in the columns
     public static Map<String, List<Object>> csvData = new LinkedHashMap<>();
 
     String filePath;
 
-    public fileReader(String filePath) {
+    public _FileReader(String filePath) {
         this.filePath = filePath;
     }
+
     public Map<String, List<Object>> storeCsv() {
 
         // using buffered reader to read the csv file
@@ -36,7 +36,7 @@ public class fileReader {
 
                 // Split at the commas, and store the values in an array
                 String[] values = line.split(",");
-                System.out.println(line);
+
                 // Handling empty cells
                 for (int i = 0; i < values.length; i++) {
                     if (values[i].matches("^\\s*$")) {
@@ -44,7 +44,7 @@ public class fileReader {
                     }
                 }
 
-                System.out.println(Arrays.toString(values));
+
 
 
                 // For loop to iterate through the columns, and store the values in the hashmap
@@ -59,10 +59,8 @@ public class fileReader {
                     // Converting the values to the correct data type
                     if (value.matches("^[0-9\\-\\.]+$")) {
                         if (value.contains(".")) {
-                            // Big decimal needed for precision
                             columnValues.add(Double.parseDouble(value));
                         } else if (value.length() <= 10) {
-                            // Convert to integer if the value is less than 10 digits
                             columnValues.add(Integer.parseInt(value));
                         } else {
                             // Otherwise convert to long

@@ -1,19 +1,21 @@
+import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression;
+
+
 import java.util.*;
+
 
 public class BigDataODD {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
     public static Map<String, List<Object>> happyData = new LinkedHashMap<>();
 
+    // Code By Dilshaan
     public static void main(String[] args) {
-        fileReader fr = new fileReader("data/happyData2017.csv");
+        _FileReader fr = new _FileReader("data/happyData2017.csv");
         happyData = fr.storeCsv();
 
-        //Dilshaan put this in the menu pls, ty
-        System.out.println(findHighest("Happiness.Score"));
-        System.out.println(findLowest("Happiness.Score"));
-
         //Running the menu method
+        ML_Predict();
         menuSelection();
 
         //Closing the scanner
@@ -21,30 +23,28 @@ public class BigDataODD {
 
     }
 
-    //Code by Daniel
+    //Code by Daniel/Osy/Dilshaan
     private static void menuSelection() {
 
         boolean selectionChoice = false;
-        while(!selectionChoice) {
-
+        while (!selectionChoice) {
             divider();
             System.out.println("Happy Data 2017");
             divider();
 
             String input = "";
-
-            while(!input.equals("EXIT")) {
+            while (!input.equals("EXIT")) {
 
                 System.out.println("Choose Your Option: " +
                         "\n\t ABOUT - What our project is about" +
                         "\n\t PARAMETERS - An explanation of the parameters used within the csv file" +
-                        "\n\t MIN - Finds the minimum happiness score" +
-                        "\n\t MAX - Finds the maximum happiness score" +
+                        "\n\t HIGHEST_LOWEST - Ranks the parameters from Highest to Lowest" +
                         "\n\t AVERAGE - Finds the average happiness score" +
-                        "\n\t DILSHAAN3 - Sample" +
-                        "\n\t FREEDOM AND TRUST - Analyzes the top and bottom 10 nations freedom and trust parameters" +
-                        "\n\t FAMILY PERCENTAGE - Finds the percentage at which family makes up the top 10 nations happiness scores" +
-                        "\n\t OSY1 - Sample" +
+                        "\n\t COUNTRY_SEARCH - Prints out all the data associated with the specific country" +
+                        "\n\t FREEDOM_TRUST - Analyzes the top and bottom 10 nations freedom and trust parameters" +
+                        "\n\t FAMILY_PERCENTAGE - Finds the percentage at which family makes up the top 10 nations happiness scores" +
+                        "\n\t ML_Predictions - Predict the overall happiness score of country x based on various values (Supervised Machine Learning Algorithim)" +
+                        "\n\t OSY1 - Sample"+
                         "\n\t OSY1 - Sample" +
                         "\n\t OSY3 - Sample" +
                         "\n\t EXIT - Terminates the program");
@@ -54,31 +54,31 @@ public class BigDataODD {
                 System.out.print("Your Choice: ");
 
                 input = scanner.nextLine().toUpperCase();
-
-                if(input.equals("ABOUT")) {
+                if (input.equals("ABOUT")) {
                     about();
-                } else if(input.equals("PARAMETERS")) {
+                } else if (input.equals("PARAMETERS")) {
                     parameters();
-                } else if(input.equals("MIN")) {
-                    //findLowest();
-                } else if(input.equals("MAX")) {
-                    //findHighest();
-                } else if(input.equals("AVERAGE")) {
+                } else if (input.equals("AVERAGE")) {
                     averageHappinessScore();
-                } else if(input.equals("DILSHAAN3")) {
-                    //Method here
-                } else if(input.equals("FREEDOM AND TRUST")) {
+                } else if (input.equals("HIGHEST_LOWEST")) {
+                    findLowestHighest();
+                } else if (input.equals("FREEDOM_TRUST")) {
                     freedomGovTrustCorrelation();
-                } else if(input.equals("FAMILY PERCENTAGE")) {
+                } else if (input.equals("FAMILY_PERCENTAGE")) {
                     findFamilyPercentage();
-                } else if(input.equals("OSY1")) {
+                } else if (input.equals("COUNTRY_SEARCH")) {
+                    findCountryData();
+                } else if (input.equals("OSY1")) {
                     //Method here
-                } else if(input.equals("OSY2")) {
+                } else if (input.equals("OSY2")) {
                     //Method here
-                } else if(input.equals("OSY3")) {
+                } else if (input.equals("OSY3")) {
                     //Method here
+                } else if (input.equals("EXIT")) {
+                    System.out.println("Exiting the program...");
+                    selectionChoice = true;
                 } else {
-                    if(!input.equals("EXIT")) {
+                    if (!input.equals("EXIT")) {
                         divider();
                         System.out.println("That is an invalid input. Please try again!");
                         divider();
@@ -93,99 +93,97 @@ public class BigDataODD {
 
     }
 
-    //WORK IN PROGRESS - RELATES TO THE 'findCountryData()' METHOD
-    //Code by Mr. Artym
-    private static int searchString (List<Object> list, String searchTerm) {
-        for(int i = 0; i < list.size(); i++) {
-            Object obj = list.get(i);
-            if(obj instanceof String && ((String) obj).equalsIgnoreCase(searchTerm)) {
-                //returns index of found item
+    //Code by Mr. Artym (General Usage)
+    private static int searchString(List<Object> list, String searchTerm) {
+        for (int i = 0; i < list.size(); i++) {
+            String obj = list.get(i).toString().replace("\"", "");
+            if (obj.equalsIgnoreCase(searchTerm)) {
                 return i;
             }
         }
-        //returns -1 if not found
         return -1;
     }
 
-
-    //WORK IN PROGRESS - I MIGHT JUST DO ANOTHER METHOD IF I CAN'T SOLVE THIS OR GIVE THIS METHOD TO OSY CUZ HE NEEDS MORE ALGORITHMS
-    //IPO
-    //User input to ask for a country name
-    //Prints out country, along with all other statistics in a cohesive and readable format
+    // Dilshaan
     private static void findCountryData() {
-        List<Object> countryCol = happyData.get("Country");
-        List<Object> happyRankCol = happyData.get("Happiness.Rank");
-        List<Object> happyScoreCol = happyData.get("Happiness.Score");
-        List<Object> whiskerHighCol = happyData.get("Whisker.high");
-        List<Object> whiskerLowCol = happyData.get("Whisker.low");
-        List<Object> economyCol = happyData.get("Economy..GDP.per.Capita.");
-        List<Object> familyCol = happyData.get("Family");
-        List<Object> healthCol = happyData.get("Health..Life.Expectancy.");
-        List<Object> freedomCol = happyData.get("Freedom");
-        List<Object> generosityCol = happyData.get("Generosity");
-        List<Object> govTrustCol = happyData.get("Trust..Government.Corrpution.");
-        List<Object> dystopiaCol = happyData.get("Dystopia.Residual");
 
         boolean countryChoice = false;
-        while(!countryChoice) {
+        while (!countryChoice) {
 
             System.out.print("Select a Country: ");
-            String countryName = scanner.nextLine().toUpperCase();
+            // make it so the user input starts with an uppercase letter
 
-            int result = searchString(countryCol, countryName);
-            if(result != -1) {
-                System.out.println("Sample: " + countryName);
+            String countryNameRaw = scanner.nextLine().toLowerCase();
+            String countryName = countryNameRaw.substring(0, 1).toUpperCase() + countryNameRaw.substring(1);
+
+            int result = searchString(happyData.get("Country"), countryName);
+            if (result == -1) {
+                System.out.println("Sorry, that country does not exist. Please try again!");
+            } else {
+                for (String key : happyData.keySet()) {
+                    System.out.println(key + ": " + happyData.get(key).get(result));
+                }
+                countryChoice = true;
             }
 
         }
+
+        System.out.println("This algorithm is a simple way to search thorough all the countries and print all the data associated with them." +
+                "The reason I was interested in making this algorithim was to understand how I could deal with instances in which the user input did not contain" +
+                "a country in the CSV file");
+        System.out.println("In a real world case, this would be one of the most used functions as it is " +
+                "the most direct way to query the data if the user already has a country in mind and doesn't need advanced statistics");
 
     }
 
-    //Code by Dilshaan
-    private static double findHighest(String colName) {
-        List<Object> colData = happyData.get(colName);
-        double highest = 0;
-
-        for (Object data : colData) {
-            if ((Double) data > highest) {
-                highest = Double.parseDouble(data.toString());
-            }
-        }
-
-        return highest;
-    }
 
     //Code by Dilshaan
-    private static double findLowest(String colName) {
+    private static void findLowestHighest() {
+        parameters();
+        System.out.println("Please enter the parameter you would like to find the sorted values of: ");
+        String colName = scanner.nextLine();
         List<Object> colData = happyData.get(colName);
-        double lowest = findHighest(colName);
 
-        for (Object data : colData) {
-            if ((Double) data < lowest) {
-                lowest = Double.parseDouble(data.toString());
+        for (int i = 0; i < colData.size() - 1; i++) {
+            for (int j = 0; j < colData.size() - i - 1; j++) {
+                if (((Number) colData.get(j)).doubleValue() < ((Number) colData.get(j + 1)).doubleValue()) {
+                    // swap the adjacent elements
+                    double temp = ((Number) colData.get(j)).doubleValue();
+                    colData.set(j, colData.get(j + 1));
+                    colData.set(j + 1, temp);
+                }
             }
         }
+        divider();
+        System.out.println(colName + " sorted in descending order: ");
+        divider();
+        System.out.println(colData);
+        for (Object num : colData) {
+            System.out.println(happyData.get("Country").get(colData.indexOf(num)) + ": " + num);
+        }
 
-        return lowest;
+        System.out.println("\nI found this algorithm interesting to make because it used bubble sort, a process which " +
+                "involves repeatedly changing the position of adjacent elements in a data structure based on a given condition, which in this case was size of the number." +
+                "This algorithm dynamic, making it applicable to any parameter in the data");
+        System.out.println("From this data, it very easy to compare one country against another. In this direct comparison organizations which" +
+                "help countries on the lower end of the spectrum can compare how higher ranking countries are finding success" +
+                "in a given parameter and try to implement it into the countries they are trying to aid");
+        divider();
     }
 
     //Code by Daniel
     private static void freedomGovTrustCorrelation() {
-        List<Object> freedomScore = happyData.get("Freedom");
-        List<Object> govTrust = happyData.get("Trust..Government.Corruption.");
-        List<Object> happinessScore = happyData.get("Happiness.Score");
         List<Object> combinedScores = new ArrayList<>();
 
-        for(int i = 0; i < freedomScore.size(); i++) {
-            Object fs = freedomScore.get(i);
-            Object gt = govTrust.get(i);
+        for (int i = 0; i < happyData.get("Freedom").size(); i++) {
+            Object fs = happyData.get("Freedom").get(i);
+            Object gt = happyData.get("Trust").get(i);
 
-            //This is to make sure that any integers within the .csv file are converted into doubles for adding together
             //https://www.programiz.com/java-programming/instanceof
-            if(fs instanceof Integer) {
+            if (fs instanceof Integer) {
                 fs = ((Integer) fs).doubleValue();
             }
-            if(gt instanceof Integer) {
+            if (gt instanceof Integer) {
                 gt = ((Integer) gt).doubleValue();
             }
 
@@ -196,13 +194,13 @@ public class BigDataODD {
         }
 
         //Sorting through combinedScores in descending order so that the highest combined scores are displayed first
-        Collections.sort(combinedScores, Collections.reverseOrder());
+        combinedScores.sort(Collections.reverseOrder());
 
         System.out.println("Top 10 Nations:");
-        for(int i = 0; i < 10; i++) {
-            double fsValue = (Double) freedomScore.get(i);
-            double gtValue = (Double) govTrust.get(i);
-            double happyValue = (Double) happinessScore.get(i);
+        for (int i = 0; i < 10; i++) {
+            double fsValue = (Double) happyData.get("Freedom").get(i);
+            double gtValue = (Double) happyData.get("Trust").get(i);
+            double happyValue = (Double) happyData.get("Happiness Score").get(i);
 
             String country = (String) happyData.get("Country").get(i);
             System.out.println(country + " - Freedom: " + fsValue + ", Government Trust: " + gtValue + ", Happiness Score: " + happyValue);
@@ -211,10 +209,10 @@ public class BigDataODD {
         divider();
 
         System.out.println("Bottom 10 Nations:");
-        for(int i = combinedScores.size() - 10; i < combinedScores.size(); i++) {
-            double fsValue = (Double) freedomScore.get(i);
-            double gtValue = (Double) govTrust.get(i);
-            double happyValue = (Double) happinessScore.get(i);
+        for (int i = combinedScores.size() - 10; i < combinedScores.size(); i++) {
+            double fsValue = (Double) happyData.get("Freedom").get(i);
+            double gtValue = (Double) happyData.get("Trust").get(i);
+            double happyValue = (Double) happyData.get("Happiness Score").get(i);
 
             String country = (String) happyData.get("Country").get(i);
             System.out.println(country + " - Freedom: " + fsValue + ", Government Trust: " + gtValue + ", Happiness Score: " + happyValue);
@@ -238,10 +236,10 @@ public class BigDataODD {
     private static void findFamilyPercentage() {
 
         List<Object> familyCol = happyData.get("Family");
-        List<Object> scoreCol = happyData.get("Happiness.Score");
+        List<Object> scoreCol = happyData.get("Happiness Score");
 
         System.out.println("Top 10 Nations:");
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             Double fcValue = Double.parseDouble(familyCol.get(i).toString());
             Double scValue = Double.parseDouble(scoreCol.get(i).toString());
             double percentage = (fcValue / scValue) * 100;
@@ -253,7 +251,7 @@ public class BigDataODD {
         divider();
 
         System.out.println("Bottom 10 Nations:");
-        for(int i = 0; i < familyCol.size(); i++) {
+        for (int i = 0; i < familyCol.size(); i++) {
             if (i >= (familyCol.size() - 10)) {
                 //Part of this code was thanks to the valiant efforts of an unknown soldier named Quinn, who skipped Chemistry 20 to heed our call
                 Double fcValue = Double.parseDouble(familyCol.get(i).toString());
@@ -280,23 +278,16 @@ public class BigDataODD {
         divider();
     }
 
-    //Code by Daniel
+    //Code by Daniel/Dilshaan
     private static void averageHappinessScore() {
-        List<Object> happinessScore = happyData.get("Happiness.Score");
+        List<Object> happinessScore = happyData.get("Happiness Score");
 
         double total = 0;
         int count = 0;
 
-        for (int i = 0; i < happinessScore.size(); i++) {
-            Object value = happinessScore.get(i);
-
-            if (value instanceof Double) {
-                total += (double) value;
-                count++;
-            } else if (value instanceof Integer) {
-                total += (double) ((int) value);
-                count++;
-            }
+        for (Object value : happinessScore) {
+            total += (double) value;
+            count++;
         }
 
         double average = total / count;
@@ -320,8 +311,32 @@ public class BigDataODD {
     private static double rn(double value, int decimalPlace) {
         // create a rounding method
 
-        double a = (Math.pow(value,10.0* decimalPlace))/10.0*decimalPlace;
+        double a = (Math.pow(value, 10.0 * decimalPlace)) / 10.0 * decimalPlace;
         return a;
+    }
+
+    // Dilshaan
+    // http://home.apache.org/~luc/commons-math-3.6-RC2-site/apidocs/org/apache/commons/math3/stat/regression/OLSMultipleLinearRegression.html
+    // ^ This helped A LOT as I have only done linear regression in python before
+    public static void ML_Predict(){
+        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+        double[] y = new double[happyData.get("Happiness Score").size()];
+        double[][] x = new double[happyData.get("Happiness Score").size()][7];
+        for (int i = 0; i < happyData.get("Happiness Score").size(); i++) {
+
+            y[i] = Double.parseDouble(happyData.get("Happiness Score").get(i).toString());
+            x[i][0] = Double.parseDouble(happyData.get("Freedom").get(i).toString());
+            x[i][1] = Double.parseDouble(happyData.get("Trust").get(i).toString());
+            x[i][2] = Double.parseDouble(happyData.get("Family").get(i).toString());
+            x[i][3] = Double.parseDouble(happyData.get("Generosity").get(i).toString());
+            x[i][4] = Double.parseDouble(happyData.get("Life Expectancy").get(i).toString());
+            x[i][5] = Double.parseDouble(happyData.get("Economy").get(i).toString());
+            x[i][6] = Double.parseDouble(happyData.get("Dystopia Residual").get(i).toString());
+        }
+        regression.newSampleData(y, x);
+        // predict the happiness score of a country based on the 7 factors
+        double[] beta = regression.estimateRegressionParameters();
+
     }
 
     //Code by Daniel - I love this
@@ -336,7 +351,7 @@ public class BigDataODD {
         divider();
     }
 
-    //Code by Daniel
+    //Code by Dilshaan
     private static void parameters() {
         divider();
         System.out.println("Country - The name of a country");
