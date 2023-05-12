@@ -14,8 +14,6 @@ public class BigDataODD {
         _FileReader fr = new _FileReader("data/happyData2017.csv");
         happyData = fr.storeCsv();
 
-        //Running the menu method
-        ML_Predict();
         menuSelection();
 
         //Closing the scanner
@@ -54,35 +52,46 @@ public class BigDataODD {
                 System.out.print("Your Choice: ");
 
                 input = scanner.nextLine().toUpperCase();
-                if (input.equals("ABOUT")) {
-                    about();
-                } else if (input.equals("PARAMETERS")) {
-                    parameters();
-                } else if (input.equals("AVERAGE")) {
-                    averageHappinessScore();
-                } else if (input.equals("HIGHEST_LOWEST")) {
-                    findLowestHighest();
-                } else if (input.equals("FREEDOM_TRUST")) {
-                    freedomGovTrustCorrelation();
-                } else if (input.equals("FAMILY_PERCENTAGE")) {
-                    findFamilyPercentage();
-                } else if (input.equals("COUNTRY_SEARCH")) {
-                    findCountryData();
-                } else if (input.equals("OSY1")) {
-                    //Method here
-                } else if (input.equals("OSY2")) {
-                    //Method here
-                } else if (input.equals("OSY3")) {
-                    //Method here
-                } else if (input.equals("EXIT")) {
-                    System.out.println("Exiting the program...");
-                    selectionChoice = true;
-                } else {
-                    if (!input.equals("EXIT")) {
+                switch (input) {
+                    case "ABOUT":
+                        about();
+                        break;
+                    case "PARAMETERS":
+                        parameters();
+                        break;
+                    case "AVERAGE":
+                        averageHappinessScore();
+                        break;
+                    case "HIGHEST_LOWEST":
+                        findLowestHighest();
+                        break;
+                    case "FREEDOM_TRUST":
+                        freedomGovTrustCorrelation();
+                        break;
+                    case "FAMILY_PERCENTAGE":
+                        findFamilyPercentage();
+                        break;
+                    case "COUNTRY_SEARCH":
+                        findCountryData();
+                        break;
+                    case "ML_PREDICT":
+                        ML_Predict();
+                        break;
+                    case "OSY2":
+                        //Method here
+                        break;
+                    case "OSY3":
+                        //Method here
+                        break;
+                    case "EXIT":
+                        System.out.println("Exiting the program...");
+                        selectionChoice = true;
+                        break;
+                    default:
                         divider();
                         System.out.println("That is an invalid input. Please try again!");
                         divider();
-                    }
+                        break;
                 }
 
             } //End of while loop - main method
@@ -337,6 +346,29 @@ public class BigDataODD {
         // predict the happiness score of a country based on the 7 factors
         double[] beta = regression.estimateRegressionParameters();
 
+        double y_predict = 0;
+
+        System.out.print("Enter the values of the 7 factors in order with spaces in between (Freedom, Trust, Generosity," +
+                "Life Expectancy, Economy, Dystopia Residual): ");
+        String[] x_input = scanner.nextLine().split(" ");
+
+        if (x_input.length != 7) {
+            System.out.println("Invalid input, Please try again");
+            ML_Predict();
+            divider();
+        }
+
+        for (int i = 0; i < x_input.length; i++) {
+            y_predict += Double.parseDouble(x_input[i]) * beta[i];
+        }
+
+        System.out.println("Predicted Happiness Score: " + y_predict);
+        divider();
+        System.out.println("This algorithm uses the OLSMultipleLinearRegression class from the Apache Commons Math library to predict the happiness score of a country based on the 7 factors. " +
+                "It was interesting to make because I have never has an opportunity to use linear regression in Java before and gave me a higher understanding" +
+                "of the actual algorithm involved ");
+        System.out.println("This algorithm is extremely useful because it can predict the overall happiness values of countries which may not be specified in our dataset. It can also" +
+                "predict values for countries in the future which have not been created yet");
     }
 
     //Code by Daniel - I love this
@@ -359,11 +391,11 @@ public class BigDataODD {
         System.out.println("Happiness Score - A metric measured by asking people how happy they were on a scale from 0 (lowest) to 10 (highest)");
         System.out.println("Whisker High - Lower confidence interval of the happiness score");
         System.out.println("Whisker Low - Upper confidence interval of the happiness score");
-        System.out.println("Economy (GDP per Capita) - The extent to which GDP contributes to the calculation of the happiness score");
+        System.out.println("Economy - The extent to which GDP contributes to the calculation of the happiness score");
         System.out.println("Family - The extent to which family contributes to the calculation happiness score");
-        System.out.println("Health (Life Expectancy) - The extent to which life expectancy contributes to the calculation happiness score");
+        System.out.println("Health - The extent to which life expectancy contributes to the calculation happiness score");
         System.out.println("Freedom - The extent to which freedom contributes to the calculation happiness score");
-        System.out.println("Trust (Government Corruption) - The extent to which perception of corruption contributes to the calculation happiness score");
+        System.out.println("Trust - The extent to which perception of corruption contributes to the calculation happiness score");
         System.out.println("Generosity - The extent to which generosity contributes to the calculation happiness score");
         System.out.println("Dystopia Residual - The extent to which dystopia residual contributes to the calculation happiness score");
         divider();
